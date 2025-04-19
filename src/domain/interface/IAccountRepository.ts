@@ -1,9 +1,9 @@
-import {Account} from '../model/account'
+import { Account } from "../model/account";
 
 export interface IAccountRepository {
-    get(id: string): Account | null
-    add(account: Account): void
-    update(account: Account): void
-    delete(id: string): void
-    getAll(): Account[]
+  get(id: string): Promise<Account | null>;
+  add(account: Account): Promise<void>;
+  update(account: Account): Promise<void>;
+  delete(id: string): Promise<void>;
+  getAll(): Promise<Account[]>;
 }

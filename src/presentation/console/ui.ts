@@ -1,5 +1,5 @@
 import { View } from "./view";
-import { HomeView } from "./view/homeView.ts";
+import { HomeView } from "./view/homeView";
 import { AccountService } from "../../application/accountService";
 
 export class ConsoleUI {

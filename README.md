@@ -26,3 +26,8 @@ For more installation options and details, visit the [official Bun installation 
     ```bash
     bun dev
     ```
+
+3. You can run the tests by using:
+    ```bash
+    bun test
+    ```

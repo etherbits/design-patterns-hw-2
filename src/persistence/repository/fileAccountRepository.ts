@@ -1,5 +1,5 @@
-import { file, type BunFile } from "bun";
-import type { IAccountRepository } from "../../domain/interface/IAccountRepository";
+import { type BunFile } from "bun";
+import type { IAccountRepository } from "../../domain/interface/accountRepository";
 import { Account } from "../../domain/model/account";
 
 export class FileAccountRepository implements IAccountRepository {
@@ -20,12 +20,12 @@ export class FileAccountRepository implements IAccountRepository {
     const store = await this.retrieveFileStore();
     const props = account.toProps();
     store[props.id] = { fullName: props.fullName, balance: props.balance };
-    this.write(store);
+    await this.write(store);
   }
 
   async update(account: Account) {
     // For now the implementations of these methods require the same code, so this works
-    this.add(account);
+    await this.add(account);
   }
 
   async delete(id: string) {
@@ -36,18 +36,23 @@ export class FileAccountRepository implements IAccountRepository {
 
   async getAll() {
     const store = await this.retrieveFileStore();
-    const accounts = Object.entries(store).map(([id, accountData]) => {
-      const account: Account = Account.fromProps({ id, ...accountData });
-      return account;
-    });
+    const accountProps = Object.entries(store)
+      .map(([id, accountData]) => {
+        if (!accountData) return null;
+        return { id, ...accountData };
+      })
+      .filter((x) => x !== null);
+
+    const accounts = accountProps.map((props) => Account.fromProps(props));
 
     return accounts;
   }
 
   async init() {
     this.storeHandle = Bun.file(this.filePath);
-    if (!this.storeHandle.exists()) {
+    if (!(await this.storeHandle.exists())) {
       await Bun.write(this.filePath, JSON.stringify({}));
+      this.storeHandle = Bun.file(this.filePath);
     }
   }
 
@@ -90,6 +95,7 @@ export class FileAccountRepository implements IAccountRepository {
 
   private async write(store: AccountStore) {
     await Bun.write(this.filePath, JSON.stringify(store));
+    this.storeHandle = Bun.file(this.filePath);
   }
 }
 

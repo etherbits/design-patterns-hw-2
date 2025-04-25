@@ -30,6 +30,10 @@ For more installation options and details, visit the [official Bun installation 
    ```bash
    bun dev
    ```
+(To run with file storage instead of in memory)
+   ```bash
+   bun dev --file-storage
+   ```
 
 3. You can run the tests by using:
    ```bash
